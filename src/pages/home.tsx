@@ -216,7 +216,7 @@ function Home() {
       ### Guidelines:
       1. **Tone**: Ensure the response matches the **${type.toLowerCase()}** tone (e.g., cheesy, flirty, dirty, etc.).
       2. **Language**: The response can include **3 English messages** and **2 romanized Nepali messages** (not actual Nepali script). When writing response in romanized nepali don't add extra english translation with it.
-      3. **Context**: Carefully analyze the context of the conversation in the screenshot. If additional context is provided (e.g., "${context}"), incorporate it into the response.
+      3. **Context**: Carefully analyze the context of the conversation in the screenshot. ${context.length > 0 ? `Here is additional context about the person you are chatting with: **${context}**. Use this very important context to make the response more personalized and relevant.` : ''}
       4. **Emojis**: Use emojis sparingly. Only include them if they add value to the message.
       5. **Output Format**: Return the responses in the following JSON format:
          ["1st Response", "2nd Response", "3rd Response", "4th Response", "5th Response"]
@@ -244,10 +244,6 @@ function Home() {
       const parsedResponse = JSON.parse(responseText);
 
       setResponse(parsedResponse);
-
-      if (textareaRef.current) {
-        textareaRef.current.value = '';
-      }
     } catch (error) {
       console.error('Error generating response:', error);
 
@@ -342,7 +338,7 @@ function Home() {
           <Textarea
             id="context"
             ref={textareaRef}
-            placeholder="E.g. We had a fight last night, so she's feeling a bit upset today. Try something thoughtful to cheer her up and make her smile."
+            placeholder="E.g. We had a fight last night. She loves BTS boy band & sleeping & eating and sleeping again. Try something fun to cheer her up."
           />
         </div>
 
@@ -442,7 +438,7 @@ function Home() {
         {imagePreview && (
           <div className="pb-4">
             <Button
-              className={`${isLoading && 'animate-pulse'} animated-background w-full bg-gradient-to-r from-rose-600 via-blue-600 to-emerald-600 py-8 font-heading text-2xl font-bold`}
+              className={`${isLoading && 'animate-pulse'} animated-background w-full bg-gradient-to-r from-blue-500 via-yellow-500 to-rose-500 py-8 font-heading text-2xl font-bold`}
               onClick={getPickUpLines}
               disabled={isLoading}
             >
