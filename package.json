@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint": "eslint . && pnpm run format",
     "preview": "vite preview",
     "format": "prettier --write .",
     "supabase-types": "pnpm dlx supabase gen types typescript --project-id 'hefsnmjrpqyifswtltgu' > src/database.types.ts && pnpm run format"

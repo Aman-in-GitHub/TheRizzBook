@@ -22,9 +22,9 @@
 
 @layer base {
   :root {
-    --primary: #ff8acd;
+    --primary: #ff4747;
     --overlay: #000000cc;
-    --background: #ffe2f3;
+    --background: #ffe5e5;
     --bw: #ffffff;
     --blank: #000000;
     --border: #000000;
