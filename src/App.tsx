@@ -1,8 +1,23 @@
+import { useEffect, useState } from 'react';
+import Splash from '@/components/splash';
+
 function App() {
+  const [showSplashscreen, setShowSplashscreen] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowSplashscreen(false);
+    }, 1500);
+  }, []);
+
+  if (showSplashscreen) {
+    return <Splash />;
+  }
+
   return (
-    <div>
-      <h1 className="motion-preset-fade motion-duration-[1s]">Rizz</h1>
-    </div>
+    <main className="motion-opacity-in motion-duration-1000">
+      <h1>Rizz</h1>
+    </main>
   );
 }
 
