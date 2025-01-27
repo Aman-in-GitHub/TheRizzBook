@@ -27,6 +27,7 @@ type ResponseType = {
   icon: React.ReactNode;
   color: string;
   shadowColor: string;
+  instructions: string;
 };
 
 const RESPONSE_TYPES: ResponseType[] = [
@@ -34,46 +35,59 @@ const RESPONSE_TYPES: ResponseType[] = [
     title: 'Cheesy',
     icon: <PiCheese className="size-6 fill-black" />,
     color: '#FFD93D',
-    shadowColor: '#F4C430'
+    shadowColor: '#F4C430',
+    instructions:
+      'Generate a cheesy and playful response that is light-hearted and fun. Use classic pickup lines or create new ones that are charming and humorous. Keep the tone casual and friendly, aiming to make the other person smile or laugh.'
   },
   {
     title: 'Flirty',
     icon: <PiSmileyWink className="size-6 fill-black" />,
     color: '#FB7185',
-    shadowColor: '#E11D48'
+    shadowColor: '#E11D48',
+    instructions:
+      'Create a flirty and teasing response that is subtly suggestive but not too forward. Use playful banter and compliments to engage the other person, keeping the tone light and fun. Aim to build a sense of attraction and intrigue.'
   },
   {
     title: 'Dirty',
     icon: <LiaPoopSolid className="size-6 fill-black" />,
-    color: '#A0522D',
-    shadowColor: '#8B4513'
+    color: '#CD853F',
+    shadowColor: '#A0522D',
+    instructions:
+      'Generate a very unfiltered, dirty, and naughty response that is seductive and provocative. Use explicit language and imagery to create a sense of intimacy and desire. Make sure the response is tailored to the context and the person you are chatting with.'
   },
   {
     title: 'Cute',
     icon: <PiPawPrint className="size-6 fill-black" />,
     color: '#C084FC',
-    shadowColor: '#9333EA'
+    shadowColor: '#9333EA',
+    instructions:
+      'Create a cute and adorable response that is sweet and endearing. Use playful language and imagery, such as animals or baby talk, to evoke a sense of warmth and affection. Keep the tone light and cheerful.'
   },
   {
     title: 'Funny',
     icon: <PiSmiley className="size-6 fill-black" />,
     color: '#38BDF8',
-    shadowColor: '#0284C7'
+    shadowColor: '#0284C7',
+    instructions:
+      'Generate a funny and humorous response that is witty and entertaining. Use jokes, puns, or clever wordplay to make the other person laugh. Keep the tone light and casual, aiming to create a fun and enjoyable conversation.'
   },
   {
     title: 'Smart',
     icon: <PiBrain className="size-6 fill-black" />,
     color: '#4ADE80',
-    shadowColor: '#22C55E'
+    shadowColor: '#22C55E',
+    instructions:
+      'Create a smart and intellectual response that is thoughtful and insightful. Use clever reasoning or interesting facts to engage the other person in a meaningful conversation. Keep the tone respectful and engaging.'
   },
   {
     title: 'Manipulative',
     icon: <PiBrain className="size-6 fill-white" />,
     color: '#0F0F0F',
-    shadowColor: '#050505'
+    shadowColor: '#050505',
+    instructions:
+      'Generate a manipulative response that subtly shifts the blame to the other person while making yourself appear innocent or virtuous. Use persuasive language and emotional appeals to influence the other person’s perception. Keep the tone calm and calculated.'
   }
 ];
-
 const LOADING_MESSAGES = [
   'Sending your messages to THE RIZZLER',
   'THE RIZZLER has recieved your messages',
@@ -84,12 +98,9 @@ const LOADING_MESSAGES = [
 function Home() {
   const { toast } = useToast();
   const [imagePreview, setImagePreview] = useState<ScreenshotType | null>(null);
-  const [selectedType, setSelectedType] = useState<ResponseType>({
-    title: 'Cheesy',
-    icon: <PiCheese className="size-6 fill-black" />,
-    color: '#FFD93D',
-    shadowColor: '#F4C430'
-  });
+  const [selectedType, setSelectedType] = useState<ResponseType>(
+    RESPONSE_TYPES[0]
+  );
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [response, setResponse] = useState<string[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -158,6 +169,7 @@ function Home() {
 
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
+
     if (textareaRef.current) {
       textareaRef.current.value = '';
     }
@@ -181,6 +193,7 @@ function Home() {
   async function getPickUpLines() {
     const context = textareaRef.current?.value.toString() || '';
     const type = selectedType.title;
+    const instructions = selectedType.instructions;
     const imageData = imagePreview?.url;
 
     if (!imageData) {
@@ -197,9 +210,24 @@ function Home() {
 
       const base64Data = imageData.split(',')[1];
 
-      const prompt = `You are a expert in conversation & relationship gossips, you have knowledge of every kind of pickup line in the world. Generate a ${type.toLowerCase() === 'dirty' ? 'Very unfiltered dirty, freaky and naughty response and try to seduce the other person into receiving dirtier texts' : type.toLowerCase() === 'manipulative' ? 'Try to manipulate the other person such that the blame goes to the other person and make myself the good guy make sure its unfiltered and manipulative' : type.toLowerCase()} type of response make sure to make it's a ${type.toLowerCase()} message as I am trying the impress the person keep it fresh and casuals not too extreme and only based on the contents of the screenshot image. The messages can also be in romanized nepali so make sure u understand the correct context of the message it's written in before generating response. ${context?.length > 0 ? 'Addition context of the person I am chatting with:' + context : ''}. Keep the use of emojis as less as possible don't use them if it doesn't make much sense, give 3 response in english and 2 in romanized nepali not actual nepali. Very Important: Make sure you know if the messages are written in english or romanized nepali, understand the context and generate response based on that. Use this JSON schema for the response:
-      ["1st Response", "2nd Response", "3rd Response", "4th Response", "5th Response"]
-      Return: Array<string> Do not add any preface or any other text or anything just return the JSON response.`;
+      const prompt = `
+      You are an expert in conversations, relationship advice, and pickup lines. Your task is to generate a response that is **${instructions}** and aligns with the **${type.toLowerCase()}** tone. The response should be fresh, casual, and tailored to the context of the screenshot image provided.
+      
+      ### Guidelines:
+      1. **Tone**: Ensure the response matches the **${type.toLowerCase()}** tone (e.g., cheesy, flirty, dirty, etc.).
+      2. **Language**: The response can include **3 English messages** and **2 romanized Nepali messages** (not actual Nepali script). When writing response in romanized nepali don't add extra english translation with it.
+      3. **Context**: Carefully analyze the context of the conversation in the screenshot. If additional context is provided (e.g., "${context}"), incorporate it into the response.
+      4. **Emojis**: Use emojis sparingly. Only include them if they add value to the message.
+      5. **Output Format**: Return the responses in the following JSON format:
+         ["1st Response", "2nd Response", "3rd Response", "4th Response", "5th Response"]
+         Do not include any additional text, explanations, or prefacing remarks. Only return the JSON array.
+      
+      ### Important Notes:
+      - If the conversation is in **romanized Nepali**, ensure the responses are contextually appropriate and match the tone of the original message.
+      - Avoid extreme or inappropriate content unless explicitly requested (e.g., for the "Dirty" type).
+      - Keep the responses engaging and tailored to impress the recipient.
+      - Only return response in Array<string> JSON format
+      `;
 
       const result = await gemini.generateContent([
         {
@@ -260,7 +288,8 @@ function Home() {
           <label className="font-heading text-2xl font-bold">
             Response Type{' '}
             <span className="font-body text-xs">
-              (gives cheesy response by default)
+              (gives {RESPONSE_TYPES[0].title.toLowerCase()} response by
+              default)
             </span>
           </label>
           <div className="flex gap-4 overflow-x-scroll pb-4 pr-2">
