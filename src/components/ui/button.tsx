@@ -9,12 +9,12 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'text-mutedText bg-primary border-2 border-border shadow-shadow hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none',
+          'text-mutedText bg-primary border-2 border-border shadow-shadow active:translate-x-boxShadowX active:translate-y-boxShadowY active:shadow-none',
         noShadow: 'text-mutedText bg-primary border-2 border-border',
         neutral:
-          'bg-bw text-text border-2 border-border shadow-shadow hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none',
+          'bg-bw text-text border-2 border-border shadow-shadow active:translate-x-boxShadowX active:translate-y-boxShadowY active:shadow-none',
         reverse:
-          'text-mutedText bg-primary border-2 border-border hover:translate-x-reverseBoxShadowX hover:translate-y-reverseBoxShadowY hover:shadow-shadow'
+          'text-mutedText bg-primary border-2 border-border active:translate-x-reverseBoxShadowX active:translate-y-reverseBoxShadowY active:shadow-shadow'
       },
       size: {
         default: 'h-10 px-4 py-2',

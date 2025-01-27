@@ -13,6 +13,7 @@
     "supabase-types": "pnpm dlx supabase gen types typescript --project-id 'hefsnmjrpqyifswtltgu' > src/database.types.ts && pnpm run format"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "@radix-ui/react-slot": "^1.1.1",
     "@radix-ui/react-toast": "^1.2.5",
     "@supabase/supabase-js": "^2.48.1",

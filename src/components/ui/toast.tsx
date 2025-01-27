@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import * as ToastPrimitives from '@radix-ui/react-toast';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { PiX as X } from 'react-icons/pi';
@@ -30,7 +32,7 @@ const toastVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary text-text',
+        default: 'bg-primary text-black',
         destructive: 'bg-black text-white'
       }
     },
@@ -62,7 +64,7 @@ const ToastAction = React.forwardRef<
   <ToastPrimitives.Action
     ref={ref}
     className={cn(
-      'dark:border-darkBorder inline-flex h-8 shrink-0 items-center justify-center rounded-base border-2 border-border bg-white px-3 font-body text-text ring-offset-white transition-colors disabled:pointer-events-none disabled:opacity-50',
+      'dark:border-darkBorder inline-flex h-8 shrink-0 items-center justify-center rounded-base border-2 border-border bg-white px-3 font-body text-black ring-offset-white transition-colors disabled:pointer-events-none disabled:opacity-50',
       className
     )}
     {...props}
@@ -77,7 +79,7 @@ const ToastClose = React.forwardRef<
   <ToastPrimitives.Close
     ref={ref}
     className={cn(
-      'absolute right-2 top-2 rounded-md p-1 text-text opacity-0 transition-opacity group-hover:opacity-100',
+      'absolute right-2 top-2 rounded-md p-1 text-black opacity-0 transition-opacity group-hover:opacity-100',
       className
     )}
     toast-close=""

@@ -1,14 +1,13 @@
 import { NavLink } from 'react-router';
 import {
-  PiSun as Sun,
-  PiMoonStars as Moon,
   PiSigma as HomeLine,
   PiSigmaFill as HomeFill,
   PiGearSix as SettingsLine,
-  PiGearSixFill as SettingsFill
+  PiGearSixFill as SettingsFill,
+  PiQuestion
 } from 'react-icons/pi';
 import { HIGHEST_Z_INDEX, TAB_BAR_ICON_STYLES } from '@/utils/constants';
-import { useTheme } from '@/components/theme-provider';
+import { useToast } from '@/hooks/useToast';
 
 const tabs = [
   {
@@ -28,11 +27,11 @@ const tabs = [
 ];
 
 function BottomTabs() {
-  const { theme, setTheme } = useTheme();
+  const { toast } = useToast();
 
   return (
     <div
-      className="fixed inset-x-0 bottom-0 flex h-16 items-center justify-between border-t-2 border-border px-6"
+      className="fixed inset-x-0 bottom-0 flex h-16 items-center justify-between border-t-2 border-border bg-background px-6"
       style={{
         zIndex: HIGHEST_Z_INDEX
       }}
@@ -52,22 +51,20 @@ function BottomTabs() {
           </NavLink>
         );
       })}
-
-      <button
+      <PiQuestion
+        className={`${TAB_BAR_ICON_STYLES} fill-primary`}
         onClick={() => {
           if (navigator.vibrate) {
             navigator.vibrate(100);
           }
 
-          setTheme(theme === 'light' ? 'dark' : 'light');
+          toast({
+            title: 'Coming Soon',
+            description: 'As the title says',
+            duration: 1500
+          });
         }}
-      >
-        {theme === 'light' ? (
-          <Moon className={`${TAB_BAR_ICON_STYLES} fill-primary`} />
-        ) : (
-          <Sun className={`${TAB_BAR_ICON_STYLES} fill-primary`} />
-        )}
-      </button>
+      />
     </div>
   );
 }

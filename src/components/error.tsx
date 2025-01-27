@@ -9,7 +9,9 @@ function Error() {
         className="motion-preset-spin size-52 select-none motion-duration-1000 lg:size-96"
       />
 
-      <Button onClick={() => window.location.reload()}>Try again</Button>
+      <Button onClick={() => window.location.reload()} className="mt-10">
+        Try again
+      </Button>
     </section>
   );
 }

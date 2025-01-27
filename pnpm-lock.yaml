@@ -7,6 +7,9 @@ settings:
 importers:
   .:
     dependencies:
+      '@google/generative-ai':
+        specifier: ^0.21.0
+        version: 0.21.0
       '@radix-ui/react-slot':
         specifier: ^1.1.1
         version: 1.1.1(@types/react@19.0.8)(react@19.0.0)
@@ -1202,6 +1205,13 @@ packages:
         integrity: sha512-lB05FkqEdUg2AA0xEbUz0SnkXT1LcCTa438W4IWTUh4hdOnVbQyOJ81OrDXsJk/LSiJHubgGEFoR5EHq1NsH1A==
       }
     engines: { node: ^18.18.0 || ^20.9.0 || >=21.1.0 }
+
+  '@google/generative-ai@0.21.0':
+    resolution:
+      {
+        integrity: sha512-7XhUbtnlkSEZK15kN3t+tzIMxsbKm/dSkKBFalj+20NvPKe1kBY7mR2P7vuijEn+f06z5+A8bVGKO0v39cr6Wg==
+      }
+    engines: { node: '>=18.0.0' }
 
   '@humanfs/core@0.19.1':
     resolution:
@@ -6593,6 +6603,8 @@ snapshots:
     dependencies:
       '@eslint/core': 0.10.0
       levn: 0.4.1
+
+  '@google/generative-ai@0.21.0': {}
 
   '@humanfs/core@0.19.1': {}
 

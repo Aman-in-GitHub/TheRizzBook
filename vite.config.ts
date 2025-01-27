@@ -15,7 +15,10 @@ export default defineConfig({
         'maskable-icon-512x512.png',
         'pwa-64x64.png',
         'pwa-192x192.png',
-        'pwa-512x512.png'
+        'pwa-512x512.png',
+        'illustration.svg',
+        'fonts/IBMPlexSans.woff2',
+        'fonts/BebasNeue.woff2'
       ],
       strategies: 'generateSW',
       workbox: {
@@ -38,7 +41,7 @@ export default defineConfig({
         name: 'The Rizz Book',
         short_name: 'TheRizzBook',
         theme_color: '#ff4747',
-        background_color: '#ffe5e5',
+        background_color: '#fff',
         display: 'standalone',
         scope: '/',
         start_url: '/',
