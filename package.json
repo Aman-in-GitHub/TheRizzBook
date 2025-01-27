@@ -9,6 +9,7 @@
     "lint": "eslint . && pnpm run format",
     "preview": "vite preview",
     "format": "prettier --write .",
+    "generate-pwa-assets": "pwa-assets-generator",
     "supabase-types": "pnpm dlx supabase gen types typescript --project-id 'hefsnmjrpqyifswtltgu' > src/database.types.ts && pnpm run format"
   },
   "dependencies": {
@@ -33,6 +34,7 @@
     "@types/node": "^22.10.10",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
+    "@vite-pwa/assets-generator": "^0.2.6",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.17.0",
@@ -52,6 +54,8 @@
     "tailwindcss-motion": "^1.0.1",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.18.2",
-    "vite": "^6.0.5"
+    "vite": "^6.0.5",
+    "vite-plugin-pwa": "^0.21.1",
+    "workbox-window": "^7.3.0"
   }
 }

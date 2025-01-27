@@ -3,6 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { PiX as X } from 'react-icons/pi';
 import * as React from 'react';
 import { cn } from '@/lib/cn';
+import { HIGHEST_Z_INDEX } from '@/utils/constants';
 
 const ToastProvider = ToastPrimitives.Provider;
 
@@ -13,16 +14,19 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      'fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 font-body sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]',
+      'fixed left-[50%] top-0 z-[100] flex max-h-screen w-full translate-x-[-50%] flex-col-reverse p-4 font-body sm:right-0 sm:flex-col md:max-w-[420px]',
       className
     )}
+    style={{
+      zIndex: HIGHEST_Z_INDEX
+    }}
     {...props}
   />
 ));
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
 const toastVariants = cva(
-  'group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-base border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark p-6 pr-8 transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full',
+  'group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-base border-2 border-border dark:border-darkBorder shadow-light dark:shadow-dark p-6 pr-8 transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-top-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-top-full',
   {
     variants: {
       variant: {

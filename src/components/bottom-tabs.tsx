@@ -30,8 +30,6 @@ const tabs = [
 function BottomTabs() {
   const { theme, setTheme } = useTheme();
 
-  console.log(theme);
-
   return (
     <div
       className="fixed inset-x-0 bottom-0 flex h-16 items-center justify-between border-t-2 border-border px-6"
