@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { MorphingText } from '@/components/ui/morph-text';
 import { SparklesText } from '@/components/ui/sparkle-text';
 import { useToast } from '@/hooks/useToast';
+import supabase from '@/lib/supabase';
 import { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useNavigate } from 'react-router';
@@ -18,10 +19,22 @@ function Intro() {
   const [name, setName] = useState('');
   const [age, setAge] = useState<number>(0);
 
-  if (isMobile) {
+  if (!isMobile) {
     navigate('/', { replace: true });
     return;
   }
+
+  useEffect(() => {
+    const name = localStorage.getItem('therizzbook-name');
+    const age = localStorage.getItem('therizzbook-age');
+    const gender = localStorage.getItem('therizzbook-gender');
+
+    if (name && age && gender) {
+      navigate('/', {
+        replace: true
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -30,6 +43,29 @@ function Intro() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  async function addGoonersToDatabase(gender: string) {
+    const { data, error } = await supabase
+      .from('gooners')
+      .insert({
+        name: name,
+        age: age,
+        gender: gender
+      })
+      .select();
+
+    if (error) {
+      console.error('Error inserting data:', error);
+      return;
+    }
+
+    if (data && data.length > 0) {
+      const latestId = data[0].id;
+      localStorage.setItem('therizzbook-id', latestId);
+    } else {
+      console.error('No data returned after insert');
+    }
+  }
 
   async function handleInfoSubmit() {
     if (name.trim() === '' || age <= 0) {
@@ -69,7 +105,7 @@ function Intro() {
       return;
     }
 
-    if (age > 70) {
+    if (age > 50) {
       toast({
         title: 'Eww! You are too old, unc',
         duration: 1000
@@ -161,6 +197,8 @@ function Intro() {
             onClick={() => {
               localStorage.removeItem('therizzbook-gender');
               localStorage.setItem('therizzbook-gender', 'male');
+              addGoonersToDatabase('male');
+
               toast({
                 title: `WELCOME TO THE RIZZ BOOK, ${name.split(' ')[0].charAt(0).toUpperCase() + name.split(' ')[0].slice(1).toLowerCase()} 🌸`,
                 duration: 1000
@@ -176,6 +214,7 @@ function Intro() {
             onClick={() => {
               localStorage.removeItem('therizzbook-gender');
               localStorage.setItem('therizzbook-gender', 'female');
+              addGoonersToDatabase('female');
 
               toast({
                 title: `WELCOME TO THE RIZZ BOOK, ${name.split(' ')[0].charAt(0).toUpperCase() + name.split(' ')[0].slice(1).toLowerCase()} 🌸`,

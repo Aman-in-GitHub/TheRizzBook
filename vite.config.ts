@@ -17,6 +17,7 @@ export default defineConfig({
         'pwa-192x192.png',
         'pwa-512x512.png',
         'illustration.svg',
+        'illustration2.svg',
         'fonts/IBMPlexSans.woff2',
         'fonts/BebasNeue.woff2'
       ],

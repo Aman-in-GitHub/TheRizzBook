@@ -16,11 +16,7 @@ function PWAUpdater() {
     onRegisterError(error) {
       console.error('SW registration failed', error);
     },
-    onOfflineReady() {
-      console.log('App is ready for offline use');
-    },
     onRegistered(registration) {
-      console.log('SW registered: ', registration);
       if (registration) {
         setInterval(
           () => {

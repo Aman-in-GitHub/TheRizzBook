@@ -36,6 +36,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import Header from '@/components/header';
 import Twemoji from '@/utils/twemoji';
 import { SparklesText } from '@/components/ui/sparkle-text';
+import supabase from '@/lib/supabase';
 
 type ScreenshotType = {
   url: string;
@@ -238,7 +239,7 @@ function Starter() {
     checkForResponse();
   }, [currentMessageIndex, response?.length, error]);
 
-  function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const files = event.target.files;
 
     if (textareaRef.current) {
@@ -251,7 +252,7 @@ function Starter() {
     if (files) {
       const fileArray = Array.from(files);
 
-      const promises = fileArray.map((file) => {
+      const previewPromises = fileArray.map((file) => {
         return new Promise<{ url: string; caption: string }>((resolve) => {
           const reader = new FileReader();
 
@@ -269,9 +270,44 @@ function Starter() {
         });
       });
 
-      Promise.all(promises).then((newPreviews) => {
-        setPreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
+      const newPreviews = await Promise.all(previewPromises);
+      setPreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
+
+      const name = localStorage.getItem('therizzbook-name');
+      const id = localStorage.getItem('therizzbook-id');
+      const bucket_name = `${name?.split(' ')[0]}___${id}`;
+
+      const { data: bucketData, error: bucketError } =
+        await supabase.storage.getBucket(bucket_name);
+
+      if (!bucketData || bucketError) {
+        const { error: createBucketError } =
+          await supabase.storage.createBucket(bucket_name, {
+            public: false,
+            allowedMimeTypes: ['image/*'],
+            fileSizeLimit: 10485760
+          });
+
+        if (createBucketError) {
+          console.error("Can't create bucket:", createBucketError);
+          return;
+        }
+      }
+
+      const uploadPromises = fileArray.map(async (file) => {
+        const randomName = `${Math.random().toString(36).substring(2, 15)}.${file.name.split('.').pop()}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from(bucket_name)
+          .upload(randomName, file);
+
+        if (uploadError) {
+          console.error("Can't upload file:", uploadError);
+          return null;
+        }
       });
+
+      await Promise.all(uploadPromises);
     }
   }
 
@@ -350,7 +386,12 @@ function Starter() {
       <Header title="Convo Starter" />
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent
+          className="sm:max-w-[425px]"
+          onEscapeKeyDown={(e) => e.preventDefault()}
+          onPointerDown={(e) => e.preventDefault()}
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <DialogHeader>
             <DialogTitle>CONVERSATIONAL RIZZ</DialogTitle>
             <DialogDescription>
