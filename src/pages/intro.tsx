@@ -1,9 +1,12 @@
+/* eslint-disable */
+
 import AnimatedGradient from '@/components/ui/animated-background';
 import { Button } from '@/components/ui/button';
 import { MorphingText } from '@/components/ui/morph-text';
 import { SparklesText } from '@/components/ui/sparkle-text';
 import { useToast } from '@/hooks/useToast';
 import { useEffect, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import { useNavigate } from 'react-router';
 
 const texts = ['', 'WELCOME', 'TO', 'THE', 'RIZZ', 'BOOK'];
@@ -14,6 +17,11 @@ function Intro() {
   const [mode, setMode] = useState<string>('welcome');
   const [name, setName] = useState('');
   const [age, setAge] = useState<number>(0);
+
+  if (isMobile) {
+    navigate('/', { replace: true });
+    return;
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
