@@ -1,13 +1,52 @@
 import { useEffect, useState } from 'react';
-import { Route, BrowserRouter, Routes, Outlet } from 'react-router';
+import {
+  Route,
+  BrowserRouter,
+  Routes,
+  Outlet,
+  useNavigate
+} from 'react-router';
+import { isMobile } from 'react-device-detect';
 import Splash from '@/components/splash';
 import Home from '@/pages/home';
-import Settings from '@/pages/settings';
+import Starter from '@/pages/starter';
+import Intro from '@/pages/intro';
 import NotFound from '@/pages/not-found';
-
 import BottomTabs from '@/components/bottom-tabs';
+import { SparklesText } from '@/components/ui/sparkle-text';
 
 function Layout() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const name = localStorage.getItem('therizzbook-name');
+    const age = localStorage.getItem('therizzbook-age');
+    const gender = localStorage.getItem('therizzbook-gender');
+
+    if (!name || !age || !gender) {
+      navigate('/intro', {
+        replace: true
+      });
+    }
+  }, []);
+
+  if (!isMobile) {
+    return (
+      <section className="flex min-h-screen w-full flex-col items-center justify-center gap-6 overflow-hidden bg-background motion-blur-in motion-opacity-in motion-duration-[2s] lg:gap-20">
+        <img
+          src="/logo.svg"
+          alt="The Rizz Book"
+          className="motion-preset-spin size-52 select-none motion-duration-1000 lg:size-96"
+        />
+
+        <SparklesText
+          text="THE RIZZ BOOK is only available on mobile devices"
+          className="mt-10 select-none text-center font-heading text-5xl font-bold"
+        />
+      </section>
+    );
+  }
+
   return (
     <>
       <Outlet />
@@ -34,8 +73,10 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="convo-starter" element={<Starter />} />
         </Route>
+
+        <Route path="intro" element={<Intro />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

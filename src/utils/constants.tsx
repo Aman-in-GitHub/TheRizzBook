@@ -1,4 +1,4 @@
-export const TAB_BAR_ICON_STYLES = 'size-8 flex-shrink-0';
+export const TAB_BAR_ICON_STYLES = 'size-10 flex-shrink-0';
 export const HIGHEST_Z_INDEX = '1000';
 export const LOWER_THAN_HIGHEST_Z_INDEX = '900';
 export const MEDIUM_Z_INDEX = '500';

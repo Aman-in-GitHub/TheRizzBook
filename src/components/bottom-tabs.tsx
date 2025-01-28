@@ -2,9 +2,8 @@ import { NavLink } from 'react-router';
 import {
   PiSigma as HomeLine,
   PiSigmaFill as HomeFill,
-  PiGearSix as SettingsLine,
-  PiGearSixFill as SettingsFill,
-  PiQuestion
+  PiChatsCircle as StarterLine,
+  PiChatsCircleFill as StarterFill
 } from 'react-icons/pi';
 import { HIGHEST_Z_INDEX, TAB_BAR_ICON_STYLES } from '@/utils/constants';
 import { useToast } from '@/hooks/useToast';
@@ -17,17 +16,16 @@ const tabs = [
     fillIcon: <HomeFill className={`${TAB_BAR_ICON_STYLES} fill-primary`} />
   },
   {
-    name: 'Settings',
-    href: '/settings',
-    lineIcon: (
-      <SettingsLine className={`${TAB_BAR_ICON_STYLES} fill-primary`} />
-    ),
-    fillIcon: <SettingsFill className={`${TAB_BAR_ICON_STYLES} fill-primary`} />
+    name: 'Starter',
+    href: '/convo-starter',
+    lineIcon: <StarterLine className={`${TAB_BAR_ICON_STYLES} fill-primary`} />,
+    fillIcon: <StarterFill className={`${TAB_BAR_ICON_STYLES} fill-primary`} />
   }
 ];
 
 function BottomTabs() {
   const { toast } = useToast();
+  const name = localStorage.getItem('therizzbook-name');
 
   return (
     <div
@@ -51,8 +49,8 @@ function BottomTabs() {
           </NavLink>
         );
       })}
-      <PiQuestion
-        className={`${TAB_BAR_ICON_STYLES} fill-primary`}
+      <button
+        className={`border-2 border-primary ${TAB_BAR_ICON_STYLES} rounded-[1000px] text-xl font-bold text-primary`}
         onClick={() => {
           if (navigator.vibrate) {
             navigator.vibrate(100);
@@ -64,7 +62,9 @@ function BottomTabs() {
             duration: 1500
           });
         }}
-      />
+      >
+        {name?.charAt(0).toUpperCase()}
+      </button>
     </div>
   );
 }

@@ -6,6 +6,21 @@ import { useToast } from '@/hooks/useToast';
 import gemini from '@/lib/gemini';
 import { useEffect, useRef, useState } from 'react';
 import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious
+} from '@/components/ui/carousel';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog';
+import {
   PiBrain,
   PiCheese,
   PiGlobeStand,
@@ -15,14 +30,6 @@ import {
   PiTerminal,
   PiTranslate
 } from 'react-icons/pi';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog';
 import { LiaPoopSolid } from 'react-icons/lia';
 import { RiNetflixLine } from 'react-icons/ri';
 import { motion, AnimatePresence } from 'motion/react';
@@ -131,22 +138,22 @@ const RESPONSE_TYPES: ResponseType[] = [
 ];
 
 const LOADING_MESSAGES = [
-  'Sending your messages to THE RIZZLER',
-  'THE RIZZLER has received your messages',
-  'THE RIZZLER is gooning to your messages',
-  'Your messages are arriving from THE RIZZ UNIVERSITY'
+  'Sending your application to THE RIZZ UNIVERSITY',
+  'THE RIZZLER has received your application',
+  'THE RIZZLER is gooning to your application',
+  'Your results are coming in from THE RIZZ UNIVERSITY'
 ];
 
-function Home() {
+function Starter() {
   const { toast } = useToast();
-  const [imagePreview, setImagePreview] = useState<ScreenshotType | null>(null);
+  const [open, setOpen] = useState(false);
+  const [previews, setPreviews] = useState<ScreenshotType[]>([]);
   const [selectedType, setSelectedType] = useState<ResponseType>(
     RESPONSE_TYPES[0]
   );
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageType>(
     LANGUAGES[0]
   );
-  const [open, setOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [response, setResponse] = useState<string[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -157,13 +164,13 @@ function Home() {
   useEffect(() => {
     async function checkForSeenStatus() {
       const hasSeenHomeDialog = localStorage.getItem(
-        'therizzbook-hasSeenHomeDialog'
+        'therizzbook-hasSeenStarterDialog'
       );
 
       if (!hasSeenHomeDialog) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         setOpen(true);
-        localStorage.setItem('therizzbook-hasSeenHomeDialog', 'true');
+        localStorage.setItem('therizzbook-hasSeenStarterDialog', 'true');
       }
     }
 
@@ -195,7 +202,7 @@ function Home() {
 
   useEffect(() => {
     if (
-      imagePreview ||
+      previews.length > 0 ||
       (isLoading === false && error) ||
       (isLoading === false && response)
     ) {
@@ -204,7 +211,7 @@ function Home() {
         behavior: 'smooth'
       });
     }
-  }, [imagePreview, isLoading]);
+  }, [previews, isLoading]);
 
   useEffect(() => {
     async function checkForResponse() {
@@ -231,24 +238,39 @@ function Home() {
   }, [currentMessageIndex, response?.length, error]);
 
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
+    const files = event.target.files;
 
     if (textareaRef.current) {
       textareaRef.current.value = '';
     }
+
     setError(null);
     setResponse(null);
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview({
-          url: reader.result as string,
-          caption:
-            file.name.length > 25 ? file.name.slice(0, 25) + '...' : file.name
+    if (files) {
+      const fileArray = Array.from(files);
+
+      const promises = fileArray.map((file) => {
+        return new Promise<{ url: string; caption: string }>((resolve) => {
+          const reader = new FileReader();
+
+          reader.onloadend = () => {
+            resolve({
+              url: reader.result as string,
+              caption:
+                file.name.length > 25
+                  ? file.name.slice(0, 25) + '...'
+                  : file.name
+            });
+          };
+
+          reader.readAsDataURL(file);
         });
-      };
-      reader.readAsDataURL(file);
+      });
+
+      Promise.all(promises).then((newPreviews) => {
+        setPreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
+      });
     }
   }
 
@@ -256,10 +278,10 @@ function Home() {
     const context = textareaRef.current?.value.toString() || '';
     const resType = type.title;
     const instructions = type.instructions;
-    const imageData = imagePreview?.url;
+    const images = previews.length;
     const language = selectedLanguage.title;
 
-    if (!imageData) {
+    if (images === 0) {
       navigator.vibrate(200);
       return;
     }
@@ -271,20 +293,32 @@ function Home() {
       setError(null);
       setResponse(null);
 
-      const base64Data = imageData.split(',')[1];
+      const imageParts = previews.map((preview) => ({
+        inlineData: {
+          data: preview.url.split(',')[1],
+          mimeType: 'image/jpeg'
+        }
+      }));
 
-      const prompt = `
-      You are an expert in conversations, relationship advice, and pickup lines. Your task is to generate a response that is **${instructions}** and aligns with the **${resType.toLowerCase()}** tone. The response should be fresh, unique and tailored to the context of the screenshot image provided.
-      
+      const prompt = `You are an expert in analyzing images, understanding social cues, and generating engaging conversation starters. Your task is to create a response that is **${instructions}** and aligns with the **${resType.toLowerCase()}** tone. The response should be fresh, unique, and tailored to the context of the uploaded image (e.g., profile, screenshot, or photo).
+
       ### Guidelines:
-      1. **Tone**: Ensure the response matches the **${resType.toLowerCase()}** tone (e.g., cheesy, flirty, dirty, etc.). Even if the tone is not specified, make sure to add some cheeky flirt to every response.
-      2. **Language**: The response can include **3 English messages** and **2 romanized Nepali messages** (not actual Nepali script). When writing response in romanized nepali don't add extra english translation with it.${language.toLowerCase() !== 'auto' && `The message is mostly written in ${language} so take that in very high consideration when understanding the context behind those messages to generate suitable response.`}.
-      3. **Context**: Carefully analyze the context of the conversation in the screenshot. ${context.length > 0 ? `Here is additional context about the person you are chatting with: **${context}**. Use this very important context to make the response more personalized and relevant.` : ''}
-      4. **Emojis**: Use emojis sparingly. Only include them if they add value to the message.
-      5. **Output Format**: Return the responses in the following JSON format:
-         ["1st Response", "2nd Response", "3rd Response", "4th Response", "5th Response"]
-         Do not include any additional text, explanations, or prefacing remarks. Only return the JSON array.
+      1. **Image Analysis**: Carefully analyze the uploaded image to gather details such as:
+         - The person's name, appearance, style, or interests (e.g., hobbies, fashion, location).
+         - Any visible text, captions, or context in the image.
+         - The overall mood or vibe of the images (e.g., professional, casual, playful).
       
+      2. **Tone**: Ensure the response matches the **${resType.toLowerCase()}** tone (e.g., cheesy, flirty, dirty, etc.). Even if the tone is not specified, make sure to add some cheeky flirt to every response.
+      
+      3. **Language**: The response can include **4 ${language.toLowerCase() === 'auto' ? 'English' : language} messages** and **1 ${language.toLowerCase() === 'auto' ? 'Romanized Nepali' : language.toLowerCase() === 'english' ? 'Romanized Nepali' : 'English'} message** (not actual Nepali script). When writing in romanized Nepali, don't add extra English translations.
+      
+      4. **Context**: Use the visual and contextual data from the image to personalize the response. ${context.length > 0 ? `Here is additional context about the person you are chatting with: **${context}**. Use this to make the response more relevant and engaging.` : ''}
+      
+      5. **Emojis**: Use emojis sparingly. Only include them if they add value to the message.
+      
+      6. **Output Format**: Return the responses in the following JSON format:
+         ["1st Response", "2nd Response", "3rd Response", "4th Response", "5th Response"]
+
       ### Important Notes:
       - If the conversation is in **Romanized Nepali**, ensure the responses are contextually appropriate and match the tone of the original message & do not add extra English translations.
       - Keep the responses engaging and tailored to impress the recipient.
@@ -292,15 +326,7 @@ function Home() {
       - Do not use pickup lines or anything that are not relevant to the conversation.
       - Only return response in Array<string> JSON format`;
 
-      const result = await gemini.generateContent([
-        {
-          inlineData: {
-            data: base64Data,
-            mimeType: 'image/jpeg'
-          }
-        },
-        prompt
-      ]);
+      const result = await gemini.generateContent([...imageParts, prompt]);
 
       const responseText = result.response.text().replace(/```json|```/g, '');
 
@@ -320,16 +346,16 @@ function Home() {
 
   return (
     <>
-      <Header title="The Rizz Book" />
+      <Header title="Convo Starter" />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>RIZZ UP LINES</DialogTitle>
+            <DialogTitle>CONVERSATIONAL RIZZ</DialogTitle>
             <DialogDescription>
-              In this page you can generate the sussiest rizz up lines based on
-              the screenshot of the chat with your{' '}
-              {gender === 'male' ? 'kitten' : 'sigma'}.
+              In this page you can upload multiple screenshots of your future{' '}
+              {gender === 'male' ? 'kitten' : 'sigma'}'s profile, images,
+              socials etc. to generate the rizziest conversation starters.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -338,43 +364,53 @@ function Home() {
                 setOpen(false);
               }}
             >
-              Understood Gigachad
+              Understood Rizzly Bear
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       <main className="p-2 pb-16 pt-[4.2rem] motion-blur-in motion-opacity-in motion-duration-1000">
-        {imagePreview ? (
+        {previews.length > 0 ? (
           <div className="pb-4">
             <label className="font-heading text-2xl font-bold">
-              Screenshot{' '}
+              Screenshots
               <span className="font-body text-xs">
-                (better screenshot === better rizz)
+                (more screenshots === better rizz)
               </span>
             </label>
 
-            <ImageCard
-              imageUrl={imagePreview.url}
-              caption={imagePreview.caption}
-            />
+            <Carousel className="w-full">
+              <CarouselContent>
+                {previews.map((preview, index) => (
+                  <CarouselItem key={index}>
+                    <ImageCard
+                      imageUrl={preview.url}
+                      caption={preview.caption}
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
           </div>
         ) : (
           <div className="select-none">
             <img
-              src="/illustration.svg"
+              src="/illustration2.svg"
               className="w-full"
-              alt="Image Upload Illustration"
+              alt="Multi-Image Upload Illustration"
             />
           </div>
         )}
 
-        {imagePreview && (
+        {previews.length > 0 && (
           <div>
             <label className="font-heading text-2xl font-bold">
               Language{' '}
               <span className="font-body text-xs">
-                (the lingo used in the screenshot)
+                (the lingo you want the starters in)
               </span>
             </label>
             <div className="flex gap-4 overflow-x-scroll pb-4 pr-2">
@@ -420,9 +456,9 @@ function Home() {
 
         <div>
           <label className="font-heading text-2xl font-bold">
-            Response Type{' '}
+            Starter Type{' '}
             <span className="font-body text-xs">
-              (gives {RESPONSE_TYPES[0].title.toLowerCase()} responses by
+              (gives {RESPONSE_TYPES[0].title.toLowerCase()} starters by
               default)
             </span>
           </label>
@@ -480,7 +516,7 @@ function Home() {
           <Textarea
             id="context"
             ref={textareaRef}
-            placeholder="E.g. We had a fight last night. She loves BTS boy band & sleeping & eating and sleeping again. Try something fun to cheer her up."
+            placeholder="E.g. He is the topper of my class and is into books and anime. Suggest something that would make a good conversation starter."
           />
         </div>
 
@@ -571,23 +607,27 @@ function Home() {
           <div className="pb-4">
             <Alert variant="destructive">
               <PiTerminal className="size-4" />
-              <AlertTitle>Rizz Error</AlertTitle>
+              <AlertTitle>Rizz Application Rejected</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           </div>
         )}
 
-        {imagePreview && (
+        {previews.length > 0 && (
           <div className="pb-4">
             <Button
-              className={`${isLoading && 'animate-pulse'} animated-background w-full bg-gradient-to-r from-yellow-500 to-rose-500 py-8 font-heading text-2xl font-bold`}
+              className={`${isLoading && 'animate-pulse'} animated-background w-full bg-gradient-to-r from-blue-500 to-fuchsia-500 py-8 font-heading`}
               onClick={() => {
                 getPickUpLines(selectedType);
               }}
               disabled={isLoading}
             >
               <SparklesText
-                text={error ? 'Try Rizzing Up Again' : 'Rizz Up My Screenshot'}
+                text={
+                  error
+                    ? 'Please help me be the rizz god'
+                    : 'Make me the rizz god'
+                }
               />
             </Button>
           </div>
@@ -597,6 +637,7 @@ function Home() {
           <input
             type="file"
             accept="image/*"
+            multiple={true}
             onChange={handleImageChange}
             className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
             id="fileInput"
@@ -612,7 +653,9 @@ function Home() {
               className="w-full py-8 font-heading text-2xl font-bold"
               disabled={isLoading}
             >
-              {imagePreview ? 'Upload new screenshot' : 'Upload a screenshot'}
+              {previews.length > 0
+                ? 'Upload new screenshots'
+                : `Upload ${gender === 'male' ? 'her' : 'his'} screenshots`}
             </Button>
           </label>
         </div>
@@ -621,4 +664,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Starter;

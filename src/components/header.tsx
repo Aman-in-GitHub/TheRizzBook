@@ -1,6 +1,7 @@
 import { PiSun as Sun, PiMoonStars as Moon } from 'react-icons/pi';
 import { useTheme } from '@/components/theme-provider';
 import { HIGHEST_Z_INDEX, TAB_BAR_ICON_STYLES } from '@/utils/constants';
+import { Button } from '@/components/ui/button';
 
 function Header({ title }: { title: string }) {
   const { theme, setTheme } = useTheme();
@@ -23,7 +24,7 @@ function Header({ title }: { title: string }) {
         </h1>
       </a>
 
-      <button
+      <Button
         onClick={() => {
           if (navigator.vibrate) {
             navigator.vibrate(100);
@@ -33,11 +34,11 @@ function Header({ title }: { title: string }) {
         }}
       >
         {theme === 'light' ? (
-          <Moon className={`${TAB_BAR_ICON_STYLES} fill-primary`} />
+          <Moon className={`${TAB_BAR_ICON_STYLES} scale-150 fill-black`} />
         ) : (
-          <Sun className={`${TAB_BAR_ICON_STYLES} fill-primary`} />
+          <Sun className={`${TAB_BAR_ICON_STYLES} scale-150 fill-black`} />
         )}
-      </button>
+      </Button>
     </nav>
   );
 }
