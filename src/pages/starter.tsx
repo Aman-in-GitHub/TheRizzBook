@@ -240,6 +240,8 @@ function Starter() {
   }, [currentMessageIndex, response?.length, error]);
 
   async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setPreviews([]);
+
     const files = event.target.files;
 
     if (textareaRef.current) {
@@ -359,7 +361,7 @@ function Starter() {
       ### Important Notes:
       - If the conversation is in **Romanized Nepali**, ensure the responses are contextually appropriate and match the tone of the original message & do not add extra English translations.
       - Keep the responses engaging and tailored to impress the recipient.
-      - Do not return response in actual nepali script like (क ख ग घ ङ) only in english or romanized nepali.
+      - Warning: Do not return response in actual nepali script like (क ख ग घ ङ) only respond in english or romanized nepali.
       - Do not use pickup lines or anything that are not relevant to the conversation.
       - Only return response in Array<string> JSON format`;
 
@@ -466,8 +468,6 @@ function Starter() {
                       navigator.vibrate(50);
                     }
 
-                    setError(null);
-                    setResponse(null);
                     setSelectedLanguage(type);
                   }}
                   style={{
