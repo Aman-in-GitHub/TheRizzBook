@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/useToast';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-const texts = ['WELCOME', 'TO', 'THE', 'RIZZ', 'BOOK'];
+const texts = ['', 'WELCOME', 'TO', 'THE', 'RIZZ', 'BOOK'];
 
 function Intro() {
   const { toast } = useToast();

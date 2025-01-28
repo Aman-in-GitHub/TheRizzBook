@@ -18,18 +18,6 @@ import { SparklesText } from '@/components/ui/sparkle-text';
 function Layout() {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const name = localStorage.getItem('therizzbook-name');
-    const age = localStorage.getItem('therizzbook-age');
-    const gender = localStorage.getItem('therizzbook-gender');
-
-    if (!name || !age || !gender) {
-      navigate('/intro', {
-        replace: true
-      });
-    }
-  }, []);
-
   if (!isMobile) {
     return (
       <section className="flex min-h-screen w-full flex-col items-center justify-center gap-6 overflow-hidden bg-background motion-blur-in motion-opacity-in motion-duration-[2s] lg:gap-20">
@@ -46,6 +34,18 @@ function Layout() {
       </section>
     );
   }
+
+  useEffect(() => {
+    const name = localStorage.getItem('therizzbook-name');
+    const age = localStorage.getItem('therizzbook-age');
+    const gender = localStorage.getItem('therizzbook-gender');
+
+    if (!name || !age || !gender) {
+      navigate('/intro', {
+        replace: true
+      });
+    }
+  }, []);
 
   return (
     <>
@@ -75,9 +75,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="convo-starter" element={<Starter />} />
         </Route>
-
         <Route path="intro" element={<Intro />} />
-
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

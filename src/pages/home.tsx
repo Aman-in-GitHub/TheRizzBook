@@ -156,11 +156,12 @@ function Home() {
 
   useEffect(() => {
     async function checkForSeenStatus() {
+      const name = localStorage.getItem('therizzbook-name');
       const hasSeenHomeDialog = localStorage.getItem(
         'therizzbook-hasSeenHomeDialog'
       );
 
-      if (!hasSeenHomeDialog) {
+      if (!hasSeenHomeDialog && name) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         setOpen(true);
         localStorage.setItem('therizzbook-hasSeenHomeDialog', 'true');

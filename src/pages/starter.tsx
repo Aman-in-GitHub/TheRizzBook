@@ -163,11 +163,12 @@ function Starter() {
 
   useEffect(() => {
     async function checkForSeenStatus() {
-      const hasSeenHomeDialog = localStorage.getItem(
+      const name = localStorage.getItem('therizzbook-name');
+      const hasSeenStarterDialog = localStorage.getItem(
         'therizzbook-hasSeenStarterDialog'
       );
 
-      if (!hasSeenHomeDialog) {
+      if (!hasSeenStarterDialog && name) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         setOpen(true);
         localStorage.setItem('therizzbook-hasSeenStarterDialog', 'true');
@@ -624,9 +625,7 @@ function Starter() {
             >
               <SparklesText
                 text={
-                  error
-                    ? 'Please help me be the rizz god'
-                    : 'Make me the rizz god'
+                  error ? 'Please help me be a rizz god' : 'Make me a rizz god'
                 }
               />
             </Button>
