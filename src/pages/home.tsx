@@ -326,6 +326,8 @@ function Home() {
       - Keep the responses engaging and tailored to impress the recipient.
       - Warning: Do not return response in actual nepali script like (क ख ग घ ङ) only respond in english or romanized nepali.
       - Do not use pickup lines or anything that are not relevant to the conversation.
+      - Most of the time, as in most chat applications, the messages on the left side of the image are the receiver's messages, and the messages on the right side are my messages. So, take that into consideration while generating a response.
+      - Try to use some wordplay and pickup lines using the messages or user's name if and only if it's applicable in that scenario and while doing that take the language used in message or name into consideration as well.
       - Only return response in Array<string> JSON format`;
 
       const result = await gemini.generateContent([
