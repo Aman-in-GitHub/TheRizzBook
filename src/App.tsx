@@ -20,6 +20,13 @@ import { SparklesText } from '@/components/ui/sparkle-text';
 function Layout() {
   const navigate = useNavigate();
 
+  console.clear();
+  console.log(
+    "THERIZZBOOK ~ This site saves all your screenshots, even those which aren't submitted. %cDON'T SUBMIT ANYTHING YOU DON'T WANT TO BE SAVED%c",
+    'color: red; font-weight: bold;',
+    'color: inherit;'
+  );
+
   if (!isMobile) {
     return (
       <section className="flex min-h-screen w-full flex-col items-center justify-center gap-6 overflow-hidden bg-background motion-blur-in motion-opacity-in motion-duration-[2s] lg:gap-20">
