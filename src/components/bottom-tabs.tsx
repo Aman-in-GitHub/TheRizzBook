@@ -58,7 +58,7 @@ function BottomTabs() {
 
           toast({
             title: 'Coming Soon',
-            description: 'As the title says',
+            description: "It's never coming, XD!",
             duration: 1500
           });
         }}
