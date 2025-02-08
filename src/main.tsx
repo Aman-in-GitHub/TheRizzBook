@@ -10,7 +10,6 @@ import Error from '@/components/error.tsx';
 import { Toaster } from '@/components/ui/toaster.tsx';
 import { ThemeProvider } from '@/components/theme-provider.tsx';
 import { useRegisterSW } from 'virtual:pwa-register/react';
-import { PostHogProvider } from 'posthog-js/react';
 
 function PWAUpdater() {
   useRegisterSW({
@@ -37,20 +36,13 @@ const queryClient = new QueryClient();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary FallbackComponent={Error}>
-      <PostHogProvider
-        apiKey={import.meta.env.VITE_POSTHOG_KEY as string}
-        options={{
-          api_host: import.meta.env.VITE_POSTHOG_HOST as string
-        }}
-      >
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider storageKey="therizzbook-ui-theme">
-            <PWAUpdater />
-            <App />
-            <Toaster />
-          </ThemeProvider>
-        </QueryClientProvider>
-      </PostHogProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider storageKey="therizzbook-ui-theme">
+          <PWAUpdater />
+          <App />
+          <Toaster />
+        </ThemeProvider>
+      </QueryClientProvider>
     </ErrorBoundary>
   </StrictMode>
 );
