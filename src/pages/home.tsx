@@ -29,7 +29,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import Header from '@/components/header';
 import Twemoji from '@/utils/twemoji';
 import { SparklesText } from '@/components/ui/sparkle-text';
-import supabase from '@/lib/supabase';
 
 type ScreenshotType = {
   url: string;
@@ -253,38 +252,6 @@ function Home() {
         });
       };
       reader.readAsDataURL(file);
-
-      const name = localStorage.getItem('therizzbook-name');
-      const id = localStorage.getItem('therizzbook-id');
-      const bucket_name = `${name?.split(' ')[0]}___${id}`;
-
-      const { data: bucketData, error: bucketError } =
-        await supabase.storage.getBucket(bucket_name);
-
-      if (!bucketData || bucketError) {
-        const { error: createBucketError } =
-          await supabase.storage.createBucket(bucket_name, {
-            public: false,
-            allowedMimeTypes: ['image/*'],
-            fileSizeLimit: 10485760
-          });
-
-        if (createBucketError) {
-          console.error("Can't create bucket:", createBucketError);
-          return;
-        }
-      }
-
-      const randomName = `${Math.random().toString(36).substring(2, 15)}.${file.name.split('.').pop()}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from(bucket_name)
-        .upload(randomName, file);
-
-      if (uploadError) {
-        console.error("Can't upload file:", uploadError);
-        return;
-      }
     }
   }
 
