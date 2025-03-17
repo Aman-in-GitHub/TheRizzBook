@@ -5,7 +5,7 @@
 </p>
 <p align="center"><em>Elevate your RIZZ game with AI-powered chat suggestions</em></p>
 
-The Rizz Book is a mobile-focused PWA designed to help users create engaging, flirty, and personalized conversation starters. Whether you're looking to break the ice, respond to a message with charm, or simply want to add some flair to your conversations, The Rizz Book has you covered.
+[The Rizz Book](https://therizzbook.pages.dev) is a mobile-focused PWA designed to help users create engaging, flirty, and personalized conversation starters. Whether you're looking to break the ice, respond to a message with charm, or simply want to add some flair to your conversations, The Rizz Book has you covered.
 
 ## Features
 
